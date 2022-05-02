@@ -53,6 +53,8 @@ class Obstacle():
             scan_filter.append(scan.ranges[0])
 
         else:
+            # We are only going to collect 3 distance readings
+            # One approx 45 degrees left, 45 degrees right and straight ahead
             left_lidar_samples_ranges = 0
             right_lidar_samples_ranges = samples_view
             center_lidar_samples_ranges = samples_view//2
@@ -70,9 +72,9 @@ class Obstacle():
         
         return scan_filter
 
-    def obstacle(self, average_linear_speed):
+    def obstacle(self):
         twist = Twist()
-        turtlebot_moving = True
+        turtlebot_moving = True #Not currently in use
 
         average_linear_speed = 0
         speed_accumulation = 0
@@ -81,6 +83,10 @@ class Obstacle():
         collision_counter = 0
 
         while not rospy.is_shutdown():
+            # Optimization information #
+            rospy.loginfo("Average linear speed: %f", average_linear_speed)
+            rospy.loginfo("Collision counter: %f", collision_counter)
+
             lidar_distances = self.get_scan()
             min_distance = min(lidar_distances)
             left_distance = lidar_distances[0]
